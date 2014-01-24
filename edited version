@@ -1,0 +1,166 @@
+import java.util.Random;
+public class AssignmentOne
+{
+
+    //public static final int N = 10;
+    public static Random generator = new Random();
+
+    public static void main(String[] args) {
+        AssignmentOne assg = new AssignmentOne() ;
+        
+        /**
+         * 1. Fill the array a from a[0] to a[n-1] as follows: To fill a[i],
+         * generate random numbers until you get one that is not already in
+         * a[0], a[1], . . . , a[i-1].
+         */
+        int [] testValues1 = { 500, 1000, 2000, 4000};
+        System.out.println("\n----First Algorithm:------\n");
+        
+        for ( int i=0; i < testValues1.length; i++)
+        {
+            double SumTime = 0 ;
+            double avgTime=0;
+            int N = testValues1[i];
+            for (int j = 1; j<11; j++) //executes 10 times to get average time
+            {
+                SumTime += assg.randPermutationOne(N);
+                avgTime = SumTime/j ;
+            }
+            System.out.printf("When n = %d,  avg time = %f ms\n",
+                    N, avgTime);
+        }
+
+        /**
+         * 2. Same as algorithm (1), but keep an extra array called the used
+         * array. When a random number, ran, is first put in the array a, set
+         * used[ran] = true. This means that when filling a[i] with a random
+         * number, you can test in one step to see whether the random number has
+         * been used, instead of the (possibly) i steps in the first algorithm.
+         */
+        int [] testValues2 = {25000, 50000, 100000, 200000, 400000, 800000};
+        System.out.println("\n----Second Algorithm:------\n");
+        for ( int i=0; i < testValues2.length; i++)
+        {
+            double SumTime = 0 ;
+            double avgTime=0;
+            int N = testValues2[i];
+            for (int j = 1; j<11; j++) //executes 10 times to get average time
+            {
+                SumTime += assg.randPermutationTwo(N);
+                avgTime = SumTime/j ;
+            }
+            System.out.printf("When n = %d,  avg time = %f ms\n",
+                    N, avgTime);
+        }
+
+        /**
+         * 3. Fill the array such that a[i] = i + 1. Then
+         *
+         * for( i = 1; i < n; i++ ) swapReferences( a[ i ], a[ randInt( 0, i ) ]
+         * );
+         */
+        int [] testValues3 = {100000, 200000, 400000, 800000, 1600000,
+                                                        3200000, 6400000};
+        System.out.println("\n----Third Algorithm:------\n");
+        for ( int i=0; i < testValues3.length; i++)
+        {
+            double SumTime = 0 ;
+            double avgTime = 0;
+            int N = testValues3[i];
+            for (int j = 1; j<11; j++) //executes 10 times to get average time
+            {
+                SumTime += assg.randPermutationThree(N);
+                avgTime = SumTime/j ;
+            }
+            System.out.printf("When n = %d,  avg time = %f ms\n",
+                    N, avgTime);
+        }
+    }
+
+    public static String arrToStr(int[] arr) {
+        String strOut = "";
+        for (int i = 0; i < arr.length; i++) {
+            strOut += arr[i] + (i != arr.length - 1 ? "," : "");
+        }
+        return strOut;
+    }
+
+    public static int randInt(int i, int j) {
+        return generator.nextInt(j - i + 1) + i;
+    }
+
+    public double randPermutationOne(int n) {
+        int[] output = new int[n];
+        int i = 0;
+        
+        long startTime = System.currentTimeMillis();
+        
+        while (i < output.length) {
+            int numberChosen = randInt(1, n);
+            boolean isNumberUsed = false;
+
+            for (int j = 0; j <= i; j++) 
+            {
+                if (output[j] == numberChosen) {
+                    isNumberUsed = true;
+                }
+            }
+
+            if (!isNumberUsed) 
+            {
+                output[i] = numberChosen;
+                i++;
+            }
+        }
+        //remove comment if want to print the permutation...
+        //System.out.println(arrToStr(output));
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        return estimatedTime;
+    }
+
+    public double randPermutationTwo(int n) {
+        int[] output = new int[n];
+        boolean[] used = new boolean[n];
+        int i = 0;
+        
+        long startTime = System.currentTimeMillis();
+
+        while (i < output.length) {
+            int numberChosen = randInt(1, n);
+            if (used[numberChosen - 1]) 
+            {
+                continue;
+            }
+
+            output[i] = numberChosen;
+            used[numberChosen - 1] = true;
+            i++;
+        }
+        //System.out.println(arrToStr(output));
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        return estimatedTime;
+    }
+    
+    public double randPermutationThree(int n) {
+        int[] output = new int[n];
+        boolean[] used = new boolean[n];
+        
+        long startTime = System.currentTimeMillis();
+        
+        for(int i = 0; i < output.length; i++){
+            output[i] = i + 1;
+        }
+        
+        for(int i = 0; i < output.length; i++){
+            int ithTempNumber = output[i];
+            int randomIndex = randInt(0, i);
+            output[i] = output[randomIndex];
+            output[randomIndex] = ithTempNumber;
+        }
+        //System.out.println(arrToStr(output));
+        
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        return estimatedTime;
+    }
+
+}
